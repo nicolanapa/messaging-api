@@ -6,3 +6,40 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+}
+
+model UserProfile {
+}
+
+model FriendList {
+}
+
+model BlockedList {
+}
+
+model Chat {
+}
+
+model ChatParticipation {
+}
+
+model ChatDeletion {
+}
+
+model Message {
+}
+
+model Image {
+}
+
+enum Status {
+  ONLINE
+  OFFLINE
+}
+
+enum ChatType {
+  CHAT
+  GROUP_CHAT
+}
