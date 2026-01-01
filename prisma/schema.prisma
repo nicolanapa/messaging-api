@@ -8,11 +8,15 @@ datasource db {
 }
 
 model User {
-  id             String        @id @default(uuid()) @db.Uuid
-  username       String
-  hashedPassword String        @map("hashed_password")
-  publicKey      String?       @map("public_key")
-  userProfiles   UserProfile
+  id              String        @id @default(uuid()) @db.Uuid
+  username        String
+  hashedPassword  String        @map("hashed_password")
+  publicKey       String?       @map("public_key")
+  userProfile     UserProfile?
+  //sentFriendRequest     FriendList[] @relation("RequestingUser")
+  //receivedFriendRequest     FriendList[] @relation("BefriendedUser")
+  userBlocker     BlockedList[] @relation("UserBlocker")
+  blockedFromUser BlockedList[] @relation("UserBlocked")
 
   @@map("user_account")
 }
@@ -28,10 +32,25 @@ model UserProfile {
   @@map("user_profile")
 }
 
-model FriendList {
-}
+/**
+ * model FriendList {
+ * user             User   @relation("RequestingUser", fields: [requestingUserId], references: [id])
+ * requestingUserId String @map("user_id") @db.Uuid
+ * user2            User   @relation("BefriendedUser", fields: [befriendedUserId], references: [id])
+ * befriendedUserId String @map("befriended_user_id") @db.Uuid
+ * @@id([requestingUserId, befriendedUserId])
+ * @@map("friend_list")
+ * }
+ */
 
 model BlockedList {
+  user          User   @relation("UserBlocker", fields: [blockerUserId], references: [id])
+  blockerUserId String @map("user_id") @db.Uuid
+  user2         User   @relation("UserBlocked", fields: [blockedUserId], references: [id])
+  blockedUserId String @map("blocked_user_id") @db.Uuid
+
+  @@id([blockerUserId, blockedUserId])
+  @@map("blocked_list")
 }
 
 model Chat {
