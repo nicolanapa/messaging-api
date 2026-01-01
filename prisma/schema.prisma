@@ -8,15 +8,20 @@ datasource db {
 }
 
 model User {
-  id              String        @id @default(uuid()) @db.Uuid
-  username        String
-  hashedPassword  String        @map("hashed_password")
-  publicKey       String?       @map("public_key")
-  userProfile     UserProfile?
+  id             String  @id @default(uuid()) @db.Uuid
+  username       String  @db.VarChar(64)
+  hashedPassword String  @map("hashed_password")
+  publicKey      String? @map("public_key")
+
+  userProfile      UserProfile?
   //sentFriendRequest     FriendList[] @relation("RequestingUser")
   //receivedFriendRequest     FriendList[] @relation("BefriendedUser")
-  userBlocker     BlockedList[] @relation("UserBlocker")
-  blockedFromUser BlockedList[] @relation("UserBlocked")
+  userBlocker      BlockedList[]       @relation("UserBlocker")
+  blockedFromUsers BlockedList[]       @relation("UserBlocked")
+  chats            ChatParticipation[]
+  chatsDeleted     ChatDeletion[]
+  messages         Message[]
+  images           Image[]
 
   @@map("user_account")
 }
@@ -34,9 +39,9 @@ model UserProfile {
 
 /**
  * model FriendList {
- * user             User   @relation("RequestingUser", fields: [requestingUserId], references: [id])
+ * requester             User   @relation("RequestingUser", fields: [requestingUserId], references: [id])
  * requestingUserId String @map("user_id") @db.Uuid
- * user2            User   @relation("BefriendedUser", fields: [befriendedUserId], references: [id])
+ * receiver            User   @relation("BefriendedUser", fields: [befriendedUserId], references: [id])
  * befriendedUserId String @map("befriended_user_id") @db.Uuid
  * @@id([requestingUserId, befriendedUserId])
  * @@map("friend_list")
@@ -44,9 +49,10 @@ model UserProfile {
  */
 
 model BlockedList {
-  user          User   @relation("UserBlocker", fields: [blockerUserId], references: [id])
+  blocker       User   @relation("UserBlocker", fields: [blockerUserId], references: [id])
   blockerUserId String @map("user_id") @db.Uuid
-  user2         User   @relation("UserBlocked", fields: [blockedUserId], references: [id])
+
+  blocked       User   @relation("UserBlocked", fields: [blockedUserId], references: [id])
   blockedUserId String @map("blocked_user_id") @db.Uuid
 
   @@id([blockerUserId, blockedUserId])
@@ -54,18 +60,67 @@ model BlockedList {
 }
 
 model Chat {
+  id   String   @id @default(uuid()) @db.Uuid
+  name String?  @db.VarChar(64)
+  type ChatType
+
+  chatParticipators ChatParticipation[]
+  chatDeletions     ChatDeletion[]
+  messages          Message[]
+  images            Image[]
+
+  @@map("chat")
 }
 
 model ChatParticipation {
+  chat   Chat   @relation(fields: [chatId], references: [id])
+  chatId String @map("chat_id") @db.Uuid
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  @@id([chatId, userId])
+  @@map("chat_participation")
 }
 
 model ChatDeletion {
+  chat   Chat   @relation(fields: [chatId], references: [id])
+  chatId String @map("chat_id") @db.Uuid
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  @@id([chatId, userId])
+  @@map("chat_deletion")
 }
 
 model Message {
+  id String @id @default(uuid()) @db.Uuid
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+  chat   Chat   @relation(fields: [chatId], references: [id])
+  chatId String @map("chat_id") @db.Uuid
+
+  // Will make the text propriety encrypted once the basic system works
+  // encryptedText String   @map("encrypted_text")
+  text      String   @map("text") @db.VarChar(4096)
+  createdAt DateTime @map("created_at") @db.Timestamptz()
+
+  @@map("message")
 }
 
 model Image {
+  id String @id @default(uuid()) @db.Uuid
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+  chat   Chat   @relation(fields: [chatId], references: [id])
+  chatId String @map("chat_id") @db.Uuid
+
+  uploadedAt DateTime @map("uploaded_at") @db.Timestamptz()
+
+  @@map("image")
 }
 
 enum Status {
