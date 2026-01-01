@@ -8,9 +8,24 @@ datasource db {
 }
 
 model User {
+  id             String        @id @default(uuid()) @db.Uuid
+  username       String
+  hashedPassword String        @map("hashed_password")
+  publicKey      String?       @map("public_key")
+  userProfiles   UserProfile
+
+  @@map("user_account")
 }
 
 model UserProfile {
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    @id @map("user_id") @db.Uuid
+  name        String?   @db.VarChar(32)
+  surname     String?   @db.VarChar(32)
+  description String?   @db.VarChar(512)
+  birthDate   DateTime? @map("birth_date") @db.Date
+
+  @@map("user_profile")
 }
 
 model FriendList {
