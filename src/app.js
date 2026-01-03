@@ -5,9 +5,9 @@ import path from "path";
 import session from "express-session";
 import passport from "passport";
 
-import userRouter from "./routes/userRouter";
-import chatRouter from "./routes/chatRouter";
-import loginRouter from "./routes/loginRouter";
+import userRouter from "./routes/userRouter.js";
+import chatRouter from "./routes/chatRouter.js";
+import loginRouter from "./routes/loginRouter.js";
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
