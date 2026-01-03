@@ -5,6 +5,10 @@ import path from "path";
 import session from "express-session";
 import passport from "passport";
 
+import userRouter from "./routes/userRouter";
+import chatRouter from "./routes/chatRouter";
+import loginRouter from "./routes/loginRouter";
+
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3000;
@@ -22,5 +26,15 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname + "/styles")));
 app.use(express.static(path.join(__dirname + "/scripts")));
+
+/*app.get("/", (req, res) => {
+    res.send("/");
+});*/
+
+app.use("/user", userRouter);
+
+app.use("/chat", chatRouter);
+
+app.use("/login", loginRouter);
 
 app.listen(PORT);
