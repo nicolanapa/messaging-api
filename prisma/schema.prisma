@@ -9,6 +9,7 @@ datasource db {
 
 model User {
   id             String  @id @default(uuid()) @db.Uuid
+  email          String  @unique @db.VarChar(255)
   username       String  @db.VarChar(64)
   hashedPassword String  @map("hashed_password")
   publicKey      String? @map("public_key")
@@ -27,8 +28,10 @@ model User {
 }
 
 model UserProfile {
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String    @id @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @id @map("user_id") @db.Uuid
+
+  status      Status    @default(OFFLINE)
   name        String?   @db.VarChar(32)
   surname     String?   @db.VarChar(32)
   description String?   @db.VarChar(512)
