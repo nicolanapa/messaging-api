@@ -3,11 +3,12 @@ import process from "process";
 import url from "url";
 import path from "path";
 import session from "express-session";
-import passport from "passport";
 
+import passport from "./db/passport.js";
 import userRouter from "./routes/userRouter.js";
 import chatRouter from "./routes/chatRouter.js";
 import loginRouter from "./routes/loginRouter.js";
+import { prismaSessionStore } from "./db/prisma.js";
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,12 +18,17 @@ const app = express();
 
 app.use(
     session({
+        cookie: {
+            maxAge: 2 * 24 * 60 * 60 * 1000,
+        },
         secret: process.env.SECRET_SESSION,
-        resave: false,
+        resave: true,
         saveUninitialized: false,
+        store: prismaSessionStore,
     }),
 );
 app.use(passport.session());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname + "/styles")));
 app.use(express.static(path.join(__dirname + "/scripts")));
