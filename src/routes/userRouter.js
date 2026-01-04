@@ -9,4 +9,6 @@ userRouter.get("/", userController.getUsers);
 
 userRouter.post("/", authorizationController.signUp);
 
+userRouter.get("/:id", userController.getUser);
+
 export default userRouter;
