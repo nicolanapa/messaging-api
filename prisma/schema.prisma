@@ -127,6 +127,13 @@ model Image {
   @@map("image")
 }
 
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
 enum Status {
   ONLINE
   OFFLINE
