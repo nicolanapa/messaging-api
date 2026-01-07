@@ -29,7 +29,7 @@ model User {
 }
 
 model UserProfile {
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @id @map("user_id") @db.Uuid
 
   status      Status    @default(OFFLINE)
@@ -53,10 +53,10 @@ model UserProfile {
  */
 
 model BlockedList {
-  blocker       User   @relation("UserBlocker", fields: [blockerUserId], references: [id])
+  blocker       User   @relation("UserBlocker", fields: [blockerUserId], references: [id], onDelete: Cascade)
   blockerUserId String @map("user_id") @db.Uuid
 
-  blocked       User   @relation("UserBlocked", fields: [blockedUserId], references: [id])
+  blocked       User   @relation("UserBlocked", fields: [blockedUserId], references: [id], onDelete: Cascade)
   blockedUserId String @map("blocked_user_id") @db.Uuid
 
   @@id([blockerUserId, blockedUserId])
@@ -80,7 +80,7 @@ model ChatParticipation {
   chat   Chat   @relation(fields: [chatId], references: [id])
   chatId String @map("chat_id") @db.Uuid
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @map("user_id") @db.Uuid
 
   @@id([chatId, userId])
@@ -91,7 +91,7 @@ model ChatDeletion {
   chat   Chat   @relation(fields: [chatId], references: [id])
   chatId String @map("chat_id") @db.Uuid
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @map("user_id") @db.Uuid
 
   @@id([chatId, userId])
@@ -101,12 +101,12 @@ model ChatDeletion {
 model Message {
   id String @id @default(uuid()) @db.Uuid
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @map("user_id") @db.Uuid
-  chat   Chat   @relation(fields: [chatId], references: [id])
-  chatId String @map("chat_id") @db.Uuid
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId String? @map("user_id") @db.Uuid
+  chat   Chat    @relation(fields: [chatId], references: [id])
+  chatId String  @map("chat_id") @db.Uuid
 
-  // Will make the text propriety encrypted once the basic system works
+  // Will make the text field encrypted once the basic system works
   // encryptedText String   @map("encrypted_text")
   text      String   @map("text") @db.VarChar(4096)
   createdAt DateTime @map("created_at") @db.Timestamptz()
@@ -117,10 +117,10 @@ model Message {
 model Image {
   id String @id @default(uuid()) @db.Uuid
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @map("user_id") @db.Uuid
-  chat   Chat   @relation(fields: [chatId], references: [id])
-  chatId String @map("chat_id") @db.Uuid
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId String? @map("user_id") @db.Uuid
+  chat   Chat    @relation(fields: [chatId], references: [id])
+  chatId String  @map("chat_id") @db.Uuid
 
   uploadedAt DateTime @map("uploaded_at") @db.Timestamptz()
 
