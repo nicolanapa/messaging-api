@@ -50,17 +50,15 @@ class AuthorizationController {
 
             // console.log(newUser);
             if (newUser !== null) {
-                console.log(
-                    await prisma.userProfile.create({
-                        data: {
-                            userId: newUser.id,
-                            name,
-                            surname,
-                            description,
-                            birthDate: birth_date,
-                        },
-                    }),
-                );
+                await prisma.userProfile.create({
+                    data: {
+                        userId: newUser.id,
+                        name,
+                        surname,
+                        description,
+                        birthDate: birth_date,
+                    },
+                });
 
                 return res.status(200).json(true);
             }
