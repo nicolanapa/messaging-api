@@ -15,15 +15,15 @@ model User {
   hashedPassword String  @map("hashed_password")
   publicKey      String? @map("public_key")
 
-  userProfile      UserProfile?
+  userProfile          UserProfile?
   //sentFriendRequest     FriendList[] @relation("RequestingUser")
   //receivedFriendRequest     FriendList[] @relation("BefriendedUser")
-  userBlocker      BlockedList[]       @relation("UserBlocker")
-  blockedFromUsers BlockedList[]       @relation("UserBlocked")
-  chats            ChatParticipation[]
-  chatsDeleted     ChatDeletion[]
-  messages         Message[]
-  images           Image[]
+  userBlocker          BlockedList[]       @relation("UserBlocker")
+  blockedFromUsers     BlockedList[]       @relation("UserBlocked")
+  chatsParticipatingIn ChatParticipation[]
+  chatsDeleted         ChatDeletion[]
+  messages             Message[]
+  images               Image[]
 
   @@map("user_account")
 }
