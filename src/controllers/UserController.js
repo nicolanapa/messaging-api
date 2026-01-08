@@ -117,6 +117,7 @@ class UserController {
 
     async getUserStatus(req, res) {
         // Limit route to only the user itself and its friends
+        // Look out for wrong uuid type Errors
 
         return res.status(200).json({
             status:
@@ -133,9 +134,64 @@ class UserController {
         });
     }
 
-    async updateUserStatus(req, res) {}
+    async updateUserStatus(req, res) {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: req.params.id,
+            },
+        });
 
-    async getUserPublicKey(req, res) {}
+        if (user === null) {
+            return res.status(404).json(false);
+        }
+
+        // Add last_seen_online field to UserProfile
+        // to track better if a User is online
+        // Remove status field from UserProfile
+
+        // (req.body.)status === ONLINE
+        // last_seen_online has latest timestamp
+        // If 2 (?) minutes have passed then a User is considered
+        // to be offline, but the timestamp can still be viewed
+        // by friends
+
+        // status === OFFLINE
+        // last_seen_online becomes null, it's like a "reset"
+
+        // This allows for the Client to have an option to enable,
+        // disable or to stop temporarily the Online Status Updating
+
+        await prisma.userProfile.upsert({
+            where: {
+                userId: req.params.id,
+            },
+            create: {
+                userId: req.params.id,
+                status: req.body.status,
+            },
+            update: {
+                status: req.body.status,
+            },
+        });
+
+        return res.status(200).json(true);
+    }
+
+    async getUserPublicKey(req, res) {
+        return res.status(200).json({
+            publicKey:
+                (
+                    await prisma.user.findUnique({
+                        where: {
+                            id: req.params.id,
+                        },
+                        select: {
+                            publicKey: true,
+                        },
+                    })
+                )?.publicKey ?? "",
+        });
+    }
 
     async updateUserPublicKey(req, res) {}
 
