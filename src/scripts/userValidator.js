@@ -70,4 +70,8 @@ const userValidator = [
         .withMessage("birth_date is not a date"),
 ];
 
-export { userValidator };
+const updateUserValidator = [userValidator[1], userValidator.slice(3)];
+
+const updateUserPublicKeyValidator = userValidator[3].default("");
+
+export { userValidator, updateUserValidator, updateUserPublicKeyValidator };
