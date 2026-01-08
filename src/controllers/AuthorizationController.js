@@ -1,5 +1,3 @@
-import { validationResult } from "express-validator";
-
 import prisma from "../db/prisma.js";
 import * as argon2 from "argon2";
 
@@ -9,12 +7,6 @@ class AuthorizationController {
     }
 
     async signUp(req, res) {
-        const result = validationResult(req);
-
-        if (!result.isEmpty()) {
-            return res.status(400).json({ errors: result.array() });
-        }
-
         const {
             email,
             username,
