@@ -72,6 +72,22 @@ const userValidator = [
 
 const updateUserValidator = [userValidator[1], userValidator.slice(3)];
 
-const updateUserPublicKeyValidator = userValidator[3].default("");
+const userStatusValidator = body("status")
+    .custom((value) => {
+        if (value === "ONLINE" || value === "OFFLINE") {
+            return true;
+        }
 
-export { userValidator, updateUserValidator, updateUserPublicKeyValidator };
+        throw new Error(
+            "status must only have 'ONLINE' or OFFLINE' as valid values",
+        );
+    });
+
+const userPublicKeyValidator = userValidator[3].default("");
+
+export {
+    userValidator,
+    updateUserValidator,
+    userStatusValidator,
+    userPublicKeyValidator,
+};
