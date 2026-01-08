@@ -115,7 +115,23 @@ class UserController {
         return res.status(200).json(true);
     }
 
-    async getUserStatus(req, res) {}
+    async getUserStatus(req, res) {
+        // Limit route to only the user itself and its friends
+
+        return res.status(200).json({
+            status:
+                (
+                    await prisma.userProfile.findUnique({
+                        where: {
+                            userId: req.params.id,
+                        },
+                        select: {
+                            status: true,
+                        },
+                    })
+                )?.status ?? "OFFLINE",
+        });
+    }
 
     async updateUserStatus(req, res) {}
 
