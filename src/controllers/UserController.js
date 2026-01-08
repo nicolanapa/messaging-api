@@ -65,7 +65,55 @@ class UserController {
         return res.status(200).json(true);
     }
 
-    async updateUser(req, res) {}
+    async updateUser(req, res) {
+        const { username, public_key, name, surname, description, birth_date } =
+            req.body;
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id: req.params.id,
+            },
+        });
+
+        if (user === null) {
+            return res.status(404).json(false);
+        } else if (
+            user.username !== username ||
+            user.publicKey !== public_key
+        ) {
+            // user.publicKey can be null while public_key undefined
+            await prisma.user.update({
+                where: {
+                    id: req.params.id,
+                },
+                data: {
+                    username,
+                    publicKey: public_key,
+                },
+            });
+        }
+
+        await prisma.userProfile.upsert({
+            where: {
+                userId: req.params.id,
+            },
+            create: {
+                userId: req.params.id,
+                name,
+                surname,
+                description,
+                birthDate: birth_date,
+            },
+            update: {
+                name,
+                surname,
+                description,
+                birthDate: birth_date,
+            },
+        });
+
+        return res.status(200).json(true);
+    }
 
     async getUserStatus(req, res) {}
 
