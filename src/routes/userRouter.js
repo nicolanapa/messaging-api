@@ -3,6 +3,8 @@ import { Router } from "express";
 import userController from "../controllers/userController.js";
 import authorizationController from "../controllers/AuthorizationController.js";
 import {
+    userPublicKeyValidator,
+    userStatusValidator,
     updateUserValidator,
     userValidator,
 } from "../scripts/userValidator.js";
@@ -37,6 +39,8 @@ userRouter.get("/:id/status", /* friends only ,*/ userController.getUserStatus);
 userRouter.put(
     "/:id/status",
     userAccessVerifier,
+    userStatusValidator,
+    formValidation,
     userController.updateUserStatus,
 );
 
@@ -45,6 +49,8 @@ userRouter.get("/:id/publicKey", userController.getUserPublicKey);
 userRouter.put(
     "/:id/publicKey",
     userAccessVerifier,
+    userPublicKeyValidator,
+    formValidation,
     userController.updateUserPublicKey,
 );
 
