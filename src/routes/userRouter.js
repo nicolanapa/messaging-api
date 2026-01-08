@@ -2,20 +2,35 @@ import { Router } from "express";
 
 import userController from "../controllers/userController.js";
 import authorizationController from "../controllers/AuthorizationController.js";
-import { userValidator } from "../scripts/userValidator.js";
+import {
+    updateUserValidator,
+    userValidator,
+} from "../scripts/userValidator.js";
 import userAccessVerifier from "../scripts/userAccessVerifier.js";
+import formValidation from "../scripts/formValidation.js";
 
 const userRouter = Router();
 
 userRouter.get("/", userController.getUsers);
 
-userRouter.post("/", userValidator, authorizationController.signUp);
+userRouter.post(
+    "/",
+    userValidator,
+    formValidation,
+    authorizationController.signUp,
+);
 
 userRouter.get("/:id", userController.getUser);
 
 userRouter.delete("/:id", userAccessVerifier, userController.deleteUser);
 
-userRouter.put("/:id/update", userAccessVerifier, userController.updateUser);
+userRouter.put(
+    "/:id/update",
+    userAccessVerifier,
+    updateUserValidator,
+    formValidation,
+    userController.updateUser,
+);
 
 userRouter.get("/:id/status", /* friends only ,*/ userController.getUserStatus);
 
