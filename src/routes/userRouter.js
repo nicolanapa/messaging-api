@@ -54,14 +54,58 @@ userRouter.put(
     userController.updateUserPublicKey,
 );
 
-// Friend requests and friend list routes, not yet decided
+userRouter.get(
+    "/:id/friendList",
+    userAccessVerifier,
+    userController.getUserFriendList,
+);
 
-// userRouter.get("/:id/blockedList", userAccessVerifier, userController.getUserBlockedList);
+userRouter.put(
+    "/:id/friendList/:friendUserId/remove",
+    userAccessVerifier,
+    userController.removeFriend,
+);
+
+// In this case :id is seen as "receiverUserId"
+userRouter.get(
+    "/:id/friendRequest",
+    userAccessVerifier,
+    userController.getUserFriendRequests,
+);
+
+// In this case :id is seen as "senderUserId"
+userRouter.put(
+    "/:id/friendRequest/:receiverUserId/sendRequest",
+    userAccessVerifier,
+    userController.sendFriendRequest,
+);
+
+// In this case :id is seen as "senderUserId"
+userRouter.put(
+    "/:id/friendRequest/:receiverUserId/cancelRequest",
+    userAccessVerifier,
+    userController.cancelFriendRequest,
+);
+
+// In this case :id is seen as "receiverUserId"
+userRouter.post(
+    "/:id/friendRequest/:senderUserId/decision",
+    userAccessVerifier,
+    // validate req.body.decision being ["ACCEPT", "REFUSE"]
+    formValidation,
+    userController.handleFriendRequest,
+);
+
+userRouter.get(
+    "/:id/blockedList",
+    userAccessVerifier,
+    userController.getUserBlockedList,
+);
 
 /* modified userAccessVerifier that only verifies if authenticated ,*/
-// userRouter.put("/:id/block", userController.blockUser);
+userRouter.put("/:id/block", userController.blockUser);
 
-// userRouter.put("/:id/unblock", userController.unblockUser);
+userRouter.put("/:id/unblock", userController.unblockUser);
 
 userRouter.get("/:id/chat", userAccessVerifier, userController.getUserChats);
 
