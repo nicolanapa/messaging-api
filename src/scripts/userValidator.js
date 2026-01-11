@@ -80,9 +80,14 @@ const userStatusValidator = body("status").custom((value) =>
 
 const userPublicKeyValidator = userValidator[3].default("");
 
+const friendRequestDecisionValidator = body("decision").custom((value) =>
+    customStringArrayValidator(value, ["ACCEPT", "REFUSE"]),
+);
+
 export {
     userValidator,
     updateUserValidator,
     userStatusValidator,
     userPublicKeyValidator,
+    friendRequestDecisionValidator,
 };
