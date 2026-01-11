@@ -195,7 +195,23 @@ class UserController {
 
     async updateUserPublicKey(req, res) {}
 
-    // Some other methods
+    async getUserFriendList(req, res) {}
+
+    async removeUserFriend(req, res) {}
+
+    async getUserFriendRequests(req, res) {}
+
+    async sendFriendRequest(req, res) {}
+
+    async cancelFriendRequest(req, res) {}
+
+    async handleFriendRequest(req, res) {}
+
+    async getUserBlockedList(req, res) {}
+
+    async blockUser(req, res) {}
+
+    async unblockUser(req, res) {}
 
     async getUserChats(req, res) {}
 }
