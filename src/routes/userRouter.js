@@ -63,7 +63,7 @@ userRouter.get(
 userRouter.put(
     "/:id/friendList/:friendUserId/remove",
     userAccessVerifier,
-    userController.removeFriend,
+    userController.removeUserFriend,
 );
 
 // In this case :id is seen as "receiverUserId"
