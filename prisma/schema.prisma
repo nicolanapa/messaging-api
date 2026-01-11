@@ -37,7 +37,7 @@ model UserProfile {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @id @map("user_id") @db.Uuid
 
-  lastSeenOnline DateTime?  @default(now()) @map("last_seen_online")
+  lastSeenOnline DateTime? @map("last_seen_online") @db.Timestamptz()
   name           String?   @db.VarChar(32)
   surname        String?   @db.VarChar(32)
   description    String?   @db.VarChar(512)
