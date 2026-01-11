@@ -10,6 +10,8 @@ import {
 } from "../scripts/userValidator.js";
 import userAccessVerifier from "../scripts/userAccessVerifier.js";
 import formValidation from "../scripts/formValidation.js";
+import friendController from "../controllers/friendController.js";
+import blockController from "../controllers/blockController.js";
 
 const userRouter = Router();
 
@@ -54,37 +56,39 @@ userRouter.put(
     userController.updateUserPublicKey,
 );
 
+// Friend Feature
+
 userRouter.get(
     "/:id/friendList",
     userAccessVerifier,
-    userController.getUserFriendList,
+    friendController.getUserFriendList,
 );
 
 userRouter.put(
     "/:id/friendList/:friendUserId/remove",
     userAccessVerifier,
-    userController.removeUserFriend,
+    friendController.removeUserFriend,
 );
 
 // In this case :id is seen as "receiverUserId"
 userRouter.get(
     "/:id/friendRequest",
     userAccessVerifier,
-    userController.getUserFriendRequests,
+    friendController.getUserFriendRequests,
 );
 
 // In this case :id is seen as "senderUserId"
 userRouter.put(
     "/:id/friendRequest/:receiverUserId/sendRequest",
     userAccessVerifier,
-    userController.sendFriendRequest,
+    friendController.sendFriendRequest,
 );
 
 // In this case :id is seen as "senderUserId"
 userRouter.put(
     "/:id/friendRequest/:receiverUserId/cancelRequest",
     userAccessVerifier,
-    userController.cancelFriendRequest,
+    friendController.cancelFriendRequest,
 );
 
 // In this case :id is seen as "receiverUserId"
@@ -93,19 +97,23 @@ userRouter.post(
     userAccessVerifier,
     // validate req.body.decision being ["ACCEPT", "REFUSE"]
     formValidation,
-    userController.handleFriendRequest,
+    friendController.handleFriendRequest,
 );
+
+// Block Feature
 
 userRouter.get(
     "/:id/blockedList",
     userAccessVerifier,
-    userController.getUserBlockedList,
+    blockController.getUserBlockedList,
 );
 
 /* modified userAccessVerifier that only verifies if authenticated ,*/
-userRouter.put("/:id/block", userController.blockUser);
+userRouter.put("/:id/block", blockController.blockUser);
 
-userRouter.put("/:id/unblock", userController.unblockUser);
+userRouter.put("/:id/unblock", blockController.unblockUser);
+
+// Other
 
 userRouter.get("/:id/chat", userAccessVerifier, userController.getUserChats);
 
