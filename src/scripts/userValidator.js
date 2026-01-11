@@ -1,5 +1,7 @@
 import { body } from "express-validator";
 
+import customStringArrayValidator from "./customStringArrayValidator.js";
+
 const userValidator = [
     body("email")
         .trim()
@@ -72,16 +74,9 @@ const userValidator = [
 
 const updateUserValidator = [userValidator[1], userValidator.slice(3)];
 
-const userStatusValidator = body("status")
-    .custom((value) => {
-        if (value === "ONLINE" || value === "OFFLINE") {
-            return true;
-        }
-
-        throw new Error(
-            "status must only have 'ONLINE' or OFFLINE' as valid values",
-        );
-    });
+const userStatusValidator = body("status").custom((value) =>
+    customStringArrayValidator(value, ["ONLINE", "OFFLINE"]),
+);
 
 const userPublicKeyValidator = userValidator[3].default("");
 
