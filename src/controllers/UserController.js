@@ -1,4 +1,5 @@
 import prisma from "../db/prisma.js";
+import statusHelper from "../scripts/statusHelper.js";
 
 class UserController {
     async getUsers(req, res) {
@@ -119,47 +120,7 @@ class UserController {
         // Limit route to only the user itself and its friends
         // Look out for wrong uuid type Errors
 
-        let userStatus = {
-            lastSeenOnline:
-                (
-                    await prisma.userProfile.findUnique({
-                        where: {
-                            userId: req.params.id,
-                        },
-                        select: {
-                            lastSeenOnline: true,
-                        },
-                    })
-                )?.lastSeenOnline ?? null,
-            status: null,
-        };
-
-        if (userStatus?.lastSeenOnline !== null) {
-            const currentDate = new Date().valueOf();
-            const lastSeenOnlineDate = new Date(
-                userStatus.lastSeenOnline,
-            ).valueOf();
-
-            const minutesPassed =
-                currentDate / 60000 - lastSeenOnlineDate / 60000;
-
-            if (minutesPassed < 2) {
-                userStatus.status = "ONLINE";
-            } else {
-                const daysPassed =
-                    currentDate / 86400000 - lastSeenOnlineDate / 86400000;
-
-                if (daysPassed > 7) {
-                    userStatus.lastSeenOnline = null;
-                }
-
-                userStatus.status = "OFFLINE";
-            }
-        } else if (userStatus?.lastSeenOnline === null) {
-            userStatus.status = "OFFLINE";
-        }
-
-        return res.status(200).json(userStatus);
+        return res.status(200).json(await statusHelper(req.params.id));
     }
 
     async updateUserStatus(req, res) {
