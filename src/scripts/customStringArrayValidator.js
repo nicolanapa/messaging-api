@@ -4,7 +4,8 @@ function customStringArrayValidator(value, array) {
     }
 
     throw new Error(
-        "status must only have 'ONLINE' or OFFLINE' as valid values",
+        "status must only have one of these as valid values: " +
+            array.toString(),
     );
 }
 
