@@ -180,7 +180,32 @@ class UserController {
         });
     }
 
-    async updateUserPublicKey(req, res) {}
+    async updateUserPublicKey(req, res) {
+        const { public_key } = req?.body ?? { public_key: null };
+
+        // Checking if a User exists happens frequently...
+        // (refactoring needed)
+        const user = await prisma.user.findUnique({
+            where: {
+                id: req.params.id,
+            },
+        });
+
+        if (user === null) {
+            return res.status(404).json(false);
+        }
+
+        await prisma.user.update({
+            where: {
+                id: req.params.id,
+            },
+            data: {
+                publicKey: public_key,
+            },
+        });
+
+        return res.status(200).json(true);
+    }
 
     async getUserChats(req, res) {}
 }
