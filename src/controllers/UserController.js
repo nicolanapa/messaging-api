@@ -119,19 +119,47 @@ class UserController {
         // Limit route to only the user itself and its friends
         // Look out for wrong uuid type Errors
 
-        return res.status(200).json({
-            status:
+        let userStatus = {
+            lastSeenOnline:
                 (
                     await prisma.userProfile.findUnique({
                         where: {
                             userId: req.params.id,
                         },
                         select: {
-                            status: true,
+                            lastSeenOnline: true,
                         },
                     })
-                )?.status ?? "OFFLINE",
-        });
+                )?.lastSeenOnline ?? null,
+            status: null,
+        };
+
+        if (userStatus?.lastSeenOnline !== null) {
+            const currentDate = new Date().valueOf();
+            const lastSeenOnlineDate = new Date(
+                userStatus.lastSeenOnline,
+            ).valueOf();
+
+            const minutesPassed =
+                currentDate / 60000 - lastSeenOnlineDate / 60000;
+
+            if (minutesPassed < 2) {
+                userStatus.status = "ONLINE";
+            } else {
+                const daysPassed =
+                    currentDate / 86400000 - lastSeenOnlineDate / 86400000;
+
+                if (daysPassed > 7) {
+                    userStatus.lastSeenOnline = null;
+                }
+
+                userStatus.status = "OFFLINE";
+            }
+        } else if (userStatus?.lastSeenOnline === null) {
+            userStatus.status = "OFFLINE";
+        }
+
+        return res.status(200).json(userStatus);
     }
 
     async updateUserStatus(req, res) {
@@ -145,13 +173,9 @@ class UserController {
             return res.status(404).json(false);
         }
 
-        // Add last_seen_online field to UserProfile
-        // to track better if a User is online
-        // Remove status field from UserProfile
-
         // (req.body.)status === ONLINE
         // last_seen_online has latest timestamp
-        // If 2 (?) minutes have passed then a User is considered
+        // If 2 minutes have passed then a User is considered
         // to be offline, but the timestamp can still be viewed
         // by friends
 
@@ -167,10 +191,12 @@ class UserController {
             },
             create: {
                 userId: req.params.id,
-                status: req.body.status,
+                lastSeenOnline:
+                    req.body.status === "ONLINE" ? new Date() : null,
             },
             update: {
-                status: req.body.status,
+                lastSeenOnline:
+                    req.body.status === "ONLINE" ? new Date() : null,
             },
         });
 
