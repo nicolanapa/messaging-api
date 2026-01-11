@@ -13,7 +13,7 @@ const prisma = new PrismaClient({
             hashedPassword: true,
         },
         userProfile: {
-            status: true,
+            lastSeenOnline: true,
         },
     },
 });

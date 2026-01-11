@@ -37,11 +37,11 @@ model UserProfile {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @id @map("user_id") @db.Uuid
 
-  status      Status    @default(OFFLINE)
-  name        String?   @db.VarChar(32)
-  surname     String?   @db.VarChar(32)
-  description String?   @db.VarChar(512)
-  birthDate   DateTime? @map("birth_date") @db.Date
+  lastSeenOnline DateTime?  @default(now()) @map("last_seen_online")
+  name           String?   @db.VarChar(32)
+  surname        String?   @db.VarChar(32)
+  description    String?   @db.VarChar(512)
+  birthDate      DateTime? @map("birth_date") @db.Date
 
   @@map("user_profile")
 }
@@ -146,11 +146,6 @@ model Session {
   sid       String   @unique
   data      String
   expiresAt DateTime
-}
-
-enum Status {
-  ONLINE
-  OFFLINE
 }
 
 enum ChatType {
