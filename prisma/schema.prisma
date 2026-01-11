@@ -57,12 +57,12 @@ model FriendRequest {
 }
 
 model FriendList {
-  user         User   @relation("FirstUserFriend", fields: [userId], references: [id])
-  userId       String @map("user_id") @db.Uuid
+  firstUser    User   @relation("FirstUserFriend", fields: [firstUserId], references: [id])
+  firstUserId  String @map("first_user_id") @db.Uuid
   secondUser   User   @relation("SecondUserFriend", fields: [secondUserId], references: [id])
-  secondUserId String @map("befriended_user_id") @db.Uuid
+  secondUserId String @map("second_user_id") @db.Uuid
 
-  @@id([userId, secondUserId])
+  @@id([firstUserId, secondUserId])
   @@map("friend_list")
 }
 
