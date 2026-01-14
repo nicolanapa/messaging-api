@@ -207,6 +207,7 @@ class UserController {
         return res.status(200).json(true);
     }
 
+    // Move in ChatController?
     async getUserChats(req, res) {}
 }
 
