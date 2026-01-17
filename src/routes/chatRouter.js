@@ -1,44 +1,50 @@
 import { Router } from "express";
 
 import chatController from "../controllers/chatController.js";
-import userAuthorizationVerifier from "../scripts/userAuthorizationVerifier.js";
 import userIsAuthenticated from "../scripts/userIsAuthenticated.js";
+import chatAuthorizationVerifier from "../scripts/chatAuthorizationVerifier.js";
 
 const chatRouter = Router();
 
 chatRouter.post("/", userIsAuthenticated, chatController.postChat);
 
-chatRouter.get("/:id", userAuthorizationVerifier, chatController.getChat);
+chatRouter.get("/:id", chatAuthorizationVerifier, chatController.getChat);
 
-chatRouter.delete("/:id", userAuthorizationVerifier, chatController.deleteChat);
+chatRouter.delete("/:id", chatAuthorizationVerifier, chatController.deleteChat);
 
 chatRouter.get(
     "/:id/member",
-    userAuthorizationVerifier,
+    chatAuthorizationVerifier,
     chatController.getUsers,
 );
 
 chatRouter.post(
     "/:id/member/:userId",
-    userAuthorizationVerifier,
+    chatAuthorizationVerifier,
     chatController.addUser,
 );
 
 chatRouter.get(
     "/:id/message",
-    userAuthorizationVerifier,
+    chatAuthorizationVerifier,
     chatController.getMessages,
 );
 
 chatRouter.post(
     "/:id/message",
-    userAuthorizationVerifier,
+    chatAuthorizationVerifier,
     chatController.postMessage,
+);
+
+chatRouter.get(
+    "/:id/message/:messageId",
+    chatAuthorizationVerifier,
+    chatController.deleteMessage,
 );
 
 chatRouter.delete(
     "/:id/message/:messageId",
-    userAuthorizationVerifier,
+    chatAuthorizationVerifier,
     chatController.deleteMessage,
 );
 
