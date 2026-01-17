@@ -1,4 +1,4 @@
-async function userAccessVerifier(req, res, next) {
+async function userAuthorizationVerifier(req, res, next) {
     if (!req.isAuthenticated()) {
         return res.status(401).json(false);
     }
@@ -10,4 +10,4 @@ async function userAccessVerifier(req, res, next) {
     return next();
 }
 
-export default userAccessVerifier;
+export default userAuthorizationVerifier;
