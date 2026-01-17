@@ -12,6 +12,7 @@ import userAuthorizationVerifier from "../scripts/userAuthorizationVerifier.js";
 import formValidation from "../scripts/formValidation.js";
 import friendController from "../controllers/friendController.js";
 import blockController from "../controllers/blockController.js";
+import userIsAuthenticated from "../scripts/userIsAuthenticated.js";
 
 const userRouter = Router();
 
@@ -108,13 +109,20 @@ userRouter.get(
     blockController.getUserBlockedList,
 );
 
-/* modified userAuthorizationVerifier that only verifies if authenticated ,*/
-userRouter.put("/:id/block", blockController.blockUser);
+userRouter.put("/:id/block", userIsAuthenticated, blockController.blockUser);
 
-userRouter.put("/:id/unblock", blockController.unblockUser);
+userRouter.put(
+    "/:id/unblock",
+    userIsAuthenticated,
+    blockController.unblockUser,
+);
 
 // Other
 
-userRouter.get("/:id/chat", userAuthorizationVerifier, userController.getUserChats);
+userRouter.get(
+    "/:id/chat",
+    userAuthorizationVerifier,
+    userController.getUserChats,
+);
 
 export default userRouter;

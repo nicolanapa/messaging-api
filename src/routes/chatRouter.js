@@ -1,33 +1,44 @@
 import { Router } from "express";
 
 import chatController from "../controllers/chatController.js";
-import userAccessVerifier from "../scripts/userAccessVerifier.js";
+import userAuthorizationVerifier from "../scripts/userAuthorizationVerifier.js";
+import userIsAuthenticated from "../scripts/userIsAuthenticated.js";
 
 const chatRouter = Router();
 
-// Modified userAccessVerifier that only checks if authorized
-// And/or if a User has access to a given chat
-chatRouter.post("/", userAccessVerifier, chatController.postChat);
+chatRouter.post("/", userIsAuthenticated, chatController.postChat);
 
-chatRouter.get("/:id", userAccessVerifier, chatController.getChat);
+chatRouter.get("/:id", userAuthorizationVerifier, chatController.getChat);
 
-chatRouter.delete("/:id", userAccessVerifier, chatController.deleteChat);
+chatRouter.delete("/:id", userAuthorizationVerifier, chatController.deleteChat);
 
-chatRouter.get("/:id/member", userAccessVerifier, chatController.getUsers);
+chatRouter.get(
+    "/:id/member",
+    userAuthorizationVerifier,
+    chatController.getUsers,
+);
 
 chatRouter.post(
     "/:id/member/:userId",
-    userAccessVerifier,
+    userAuthorizationVerifier,
     chatController.addUser,
 );
 
-chatRouter.get("/:id/message", userAccessVerifier, chatController.getMessages);
+chatRouter.get(
+    "/:id/message",
+    userAuthorizationVerifier,
+    chatController.getMessages,
+);
 
-chatRouter.post("/:id/message", userAccessVerifier, chatController.postMessage);
+chatRouter.post(
+    "/:id/message",
+    userAuthorizationVerifier,
+    chatController.postMessage,
+);
 
 chatRouter.delete(
     "/:id/message/:messageId",
-    userAccessVerifier,
+    userAuthorizationVerifier,
     chatController.deleteMessage,
 );
 
