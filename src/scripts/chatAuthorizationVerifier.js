@@ -2,8 +2,6 @@ import prisma from "../db/prisma.js";
 import userIsAuthenticated from "./userIsAuthenticated.js";
 
 async function chatAuthorizationVerifier(req, res, next) {
-    console.log(req.user);
-
     const user = await prisma.user.findUnique({
         where: {
             id: req.user,
@@ -13,7 +11,17 @@ async function chatAuthorizationVerifier(req, res, next) {
         },
     });
 
-    console.log(user);
+    if (user === null) {
+        return res.status(404).json(false);
+    }
+
+    const isInChat = user.chatsParticipatingIn.some((chatUserObject) => {
+        return chatUserObject.chatId === req.params.id;
+    });
+
+    if (!isInChat) {
+        return res.status(404).json(false);
+    }
 
     return next();
 }
