@@ -8,11 +8,11 @@ import {
     updateUserValidator,
     userValidator,
 } from "../scripts/userValidator.js";
-import userAuthorizationVerifier from "../scripts/userAuthorizationVerifier.js";
+import { userIsAuthenticatedAndAuthorized } from "../scripts/userAuthorizationVerifier.js";
+import userIsAuthenticated from "../scripts/userIsAuthenticated.js";
 import formValidation from "../scripts/formValidation.js";
 import friendController from "../controllers/friendController.js";
 import blockController from "../controllers/blockController.js";
-import userIsAuthenticated from "../scripts/userIsAuthenticated.js";
 
 const userRouter = Router();
 
@@ -27,11 +27,15 @@ userRouter.post(
 
 userRouter.get("/:id", userController.getUser);
 
-userRouter.delete("/:id", userAuthorizationVerifier, userController.deleteUser);
+userRouter.delete(
+    "/:id",
+    userIsAuthenticatedAndAuthorized,
+    userController.deleteUser,
+);
 
 userRouter.put(
     "/:id/update",
-    userAuthorizationVerifier,
+    userIsAuthenticatedAndAuthorized,
     updateUserValidator,
     formValidation,
     userController.updateUser,
@@ -41,7 +45,7 @@ userRouter.get("/:id/status", /* friends only ,*/ userController.getUserStatus);
 
 userRouter.put(
     "/:id/status",
-    userAuthorizationVerifier,
+    userIsAuthenticatedAndAuthorized,
     userStatusValidator,
     formValidation,
     userController.updateUserStatus,
@@ -51,7 +55,7 @@ userRouter.get("/:id/publicKey", userController.getUserPublicKey);
 
 userRouter.put(
     "/:id/publicKey",
-    userAuthorizationVerifier,
+    userIsAuthenticatedAndAuthorized,
     userPublicKeyValidator,
     formValidation,
     userController.updateUserPublicKey,
@@ -61,41 +65,41 @@ userRouter.put(
 
 userRouter.get(
     "/:id/friendList",
-    userAuthorizationVerifier,
+    userIsAuthenticatedAndAuthorized,
     friendController.getUserFriendList,
 );
 
 userRouter.put(
     "/:id/friendList/:friendUserId/remove",
-    userAuthorizationVerifier,
+    userIsAuthenticatedAndAuthorized,
     friendController.removeUserFriend,
 );
 
 // In this case :id is seen as "receiverUserId"
 userRouter.get(
     "/:id/friendRequest",
-    userAuthorizationVerifier,
+    userIsAuthenticatedAndAuthorized,
     friendController.getUserFriendRequests,
 );
 
 // In this case :id is seen as "senderUserId"
 userRouter.put(
     "/:id/friendRequest/:receiverUserId/sendRequest",
-    userAuthorizationVerifier,
+    userIsAuthenticatedAndAuthorized,
     friendController.sendFriendRequest,
 );
 
 // In this case :id is seen as "senderUserId"
 userRouter.put(
     "/:id/friendRequest/:receiverUserId/cancelRequest",
-    userAuthorizationVerifier,
+    userIsAuthenticatedAndAuthorized,
     friendController.cancelFriendRequest,
 );
 
 // In this case :id is seen as "receiverUserId"
 userRouter.post(
     "/:id/friendRequest/:senderUserId/decision",
-    userAuthorizationVerifier,
+    userIsAuthenticatedAndAuthorized,
     // validate req.body.decision being ["ACCEPT", "REFUSE"]
     formValidation,
     friendController.handleFriendRequest,
@@ -105,7 +109,7 @@ userRouter.post(
 
 userRouter.get(
     "/:id/blockedList",
-    userAuthorizationVerifier,
+    userIsAuthenticatedAndAuthorized,
     blockController.getUserBlockedList,
 );
 
@@ -121,7 +125,7 @@ userRouter.put(
 
 userRouter.get(
     "/:id/chat",
-    userAuthorizationVerifier,
+    userIsAuthenticatedAndAuthorized,
     userController.getUserChats,
 );
 

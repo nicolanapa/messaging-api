@@ -2,49 +2,57 @@ import { Router } from "express";
 
 import chatController from "../controllers/chatController.js";
 import userIsAuthenticated from "../scripts/userIsAuthenticated.js";
-import chatAuthorizationVerifier from "../scripts/chatAuthorizationVerifier.js";
+import { chatIsAuthenticatedAndAuthorized } from "../scripts/chatAuthorizationVerifier.js";
 
 const chatRouter = Router();
 
 chatRouter.post("/", userIsAuthenticated, chatController.postChat);
 
-chatRouter.get("/:id", chatAuthorizationVerifier, chatController.getChat);
+chatRouter.get(
+    "/:id",
+    chatIsAuthenticatedAndAuthorized,
+    chatController.getChat,
+);
 
-chatRouter.delete("/:id", chatAuthorizationVerifier, chatController.deleteChat);
+chatRouter.delete(
+    "/:id",
+    chatIsAuthenticatedAndAuthorized,
+    chatController.deleteChat,
+);
 
 chatRouter.get(
     "/:id/member",
-    chatAuthorizationVerifier,
+    chatIsAuthenticatedAndAuthorized,
     chatController.getUsers,
 );
 
 chatRouter.post(
     "/:id/member/:userId",
-    chatAuthorizationVerifier,
+    chatIsAuthenticatedAndAuthorized,
     chatController.addUser,
 );
 
 chatRouter.get(
     "/:id/message",
-    chatAuthorizationVerifier,
+    chatIsAuthenticatedAndAuthorized,
     chatController.getMessages,
 );
 
 chatRouter.post(
     "/:id/message",
-    chatAuthorizationVerifier,
+    chatIsAuthenticatedAndAuthorized,
     chatController.postMessage,
 );
 
 chatRouter.get(
     "/:id/message/:messageId",
-    chatAuthorizationVerifier,
+    chatIsAuthenticatedAndAuthorized,
     chatController.deleteMessage,
 );
 
 chatRouter.delete(
     "/:id/message/:messageId",
-    chatAuthorizationVerifier,
+    chatIsAuthenticatedAndAuthorized,
     chatController.deleteMessage,
 );
 
