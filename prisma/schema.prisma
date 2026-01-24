@@ -91,7 +91,7 @@ model Chat {
 }
 
 model ChatParticipation {
-  chat   Chat   @relation(fields: [chatId], references: [id])
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId String @map("chat_id") @db.Uuid
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -102,7 +102,7 @@ model ChatParticipation {
 }
 
 model ChatDeletion {
-  chat   Chat   @relation(fields: [chatId], references: [id])
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId String @map("chat_id") @db.Uuid
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -117,7 +117,7 @@ model Message {
 
   user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId String? @map("user_id") @db.Uuid
-  chat   Chat    @relation(fields: [chatId], references: [id])
+  chat   Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId String  @map("chat_id") @db.Uuid
 
   // Will make the text field encrypted once the basic system works
@@ -133,7 +133,7 @@ model Image {
 
   user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId String? @map("user_id") @db.Uuid
-  chat   Chat    @relation(fields: [chatId], references: [id])
+  chat   Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId String  @map("chat_id") @db.Uuid
 
   uploadedAt DateTime @map("uploaded_at") @db.Timestamptz()
