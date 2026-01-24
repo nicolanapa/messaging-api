@@ -1,9 +1,22 @@
 import prisma from "../db/prisma.js";
+import messageImageUnion from "../scripts/messageImageUnion.js";
 
 class chatController {
     async postChat(req, res) {}
 
-    async getChat(req, res) {}
+    async getChat(req, res) {
+        const chat = await prisma.chat.findUnique({
+            where: {
+                id: req.params.id,
+            },
+            include: {
+                chatParticipations: true,
+                chatDeletions: true,
+            },
+        });
+
+        return res.status(200).json(chat);
+    }
 
     async deleteChat(req, res) {
         const chatParticipations = await prisma.chatParticipation.findMany({
@@ -64,11 +77,29 @@ class chatController {
         return res.status(200).json(true);
     }
 
-    async getUsers(req, res) {}
+    async getUsers(req, res) {
+        const chatParticipations = await prisma.chatParticipation.findMany({
+            where: {
+                chatId: req.params.id,
+            },
+        });
+
+        let participationsArray = Array(chatParticipations.length);
+
+        for (let i = 0; i < chatParticipations.length; i++) {
+            participationsArray[i] = chatParticipations[i].userId;
+        }
+
+        return res
+            .status(200)
+            .json({ chatParticipations: participationsArray });
+    }
 
     async addUser(req, res) {}
 
-    async getMessages(req, res) {}
+    async getMessages(req, res) {
+        console.log(await messageImageUnion(prisma, req.params.id));
+    }
 
     async postMessage(req, res) {}
 
