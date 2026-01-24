@@ -17,7 +17,7 @@ async function messageImageUnion(prisma, chatId, limit = null, offset = null) {
         },
     });
 
-    console.log(messages, "\n\n", images);
+    // console.log(messages, "\n\n", images);
 
     let arrayOfMessagesAndImages = Array(messages.length + images.length);
 
@@ -33,57 +33,65 @@ async function messageImageUnion(prisma, chatId, limit = null, offset = null) {
         return images;
     }
 
-    let timestamp = null;
+    // Timestamp is useless after all
+    // let timestamp = null;
 
-    if (messages[0].createdAt <= images[0].uploadedAt) {
-        timestamp = messages[0].createdAt;
-    } else {
-        timestamp = images[0].uploadedAt;
-    }
-
+    // Sorting double for loop that "prioritize" messages
+    // Should be O(n) since I'm not making it fully loop every time
     let latestIndex2 = 0;
     for (let i = 0; i < messages.length; i++) {
-        console.log(timestamp);
+        // console.log(timestamp);
 
-        // Side tested: more messages than images
-        // Have to test: more images than messages
+        if (i === -1) {
+            break;
+        }
+
         for (let i2 = latestIndex2; i2 < images.length; i2++) {
-            if (latestIndex2 === null) {
-                timestamp = messages[i].createdAt;
+            if (i === -2) {
+                // timestamp = images[i2].uploadedAt;
+
+                arrayOfMessagesAndImages[messages.length + i2] = images[i2];
+
+                continue;
+            }
+
+            if (latestIndex2 === -2) {
+                // timestamp = messages[i].createdAt;
 
                 arrayOfMessagesAndImages[i + images.length] = messages[i];
-
-                console.log("message");
 
                 break;
             }
 
-            console.log(
+            /*console.log(
                 latestIndex2,
                 messages[i].createdAt,
                 images[i2].uploadedAt,
                 messages[i].createdAt <= images[i2].uploadedAt,
-            );
+            );*/
 
             if (messages[i].createdAt <= images[i2].uploadedAt) {
-                timestamp = messages[i].createdAt;
+                // timestamp = messages[i].createdAt;
 
                 arrayOfMessagesAndImages[i + i2] = messages[i];
 
-                console.log("message");
+                if (i + 1 >= messages.length) {
+                    i = -2;
+                    i2--;
+
+                    continue;
+                }
             } else {
-                timestamp = images[i2].uploadedAt;
+                // timestamp = images[i2].uploadedAt;
 
                 arrayOfMessagesAndImages[i + i2] = images[i2];
-
-                console.log("image");
 
                 i--;
 
                 if (i2 + 1 < images.length) {
                     latestIndex2++;
                 } else {
-                    latestIndex2 = null;
+                    latestIndex2 = -2;
                 }
             }
 
