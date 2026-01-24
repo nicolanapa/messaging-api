@@ -98,7 +98,14 @@ class chatController {
     async addUser(req, res) {}
 
     async getMessages(req, res) {
-        console.log(await messageImageUnion(prisma, req.params.id));
+        const allMessagesImages = await messageImageUnion(
+            prisma,
+            req.params.id,
+            null,
+            null,
+        );
+
+        return res.status(200).json({ messagesImages: allMessagesImages });
     }
 
     async postMessage(req, res) {}
