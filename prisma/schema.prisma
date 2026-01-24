@@ -82,10 +82,10 @@ model Chat {
   name String?  @db.VarChar(64)
   type ChatType
 
-  chatParticipators ChatParticipation[]
-  chatDeletions     ChatDeletion[]
-  messages          Message[]
-  images            Image[]
+  chatParticipations ChatParticipation[]
+  chatDeletions      ChatDeletion[]
+  messages           Message[]
+  images             Image[]
 
   @@map("chat")
 }
