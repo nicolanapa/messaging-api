@@ -101,8 +101,8 @@ class chatController {
         const allMessagesImages = await messageImageUnion(
             prisma,
             req.params.id,
-            null,
-            null,
+            parseInt(req.body?.limit) ? parseInt(req.body?.limit) : 0,
+            parseInt(req.body?.offset) ? parseInt(req.body?.offset) : 0,
         );
 
         return res.status(200).json({ messagesImages: allMessagesImages });

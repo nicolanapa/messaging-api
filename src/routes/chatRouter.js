@@ -3,6 +3,8 @@ import { Router } from "express";
 import chatController from "../controllers/chatController.js";
 import userIsAuthenticated from "../scripts/userIsAuthenticated.js";
 import { chatIsAuthenticatedAndAuthorized } from "../scripts/chatAuthorizationVerifier.js";
+import { limitOffset } from "../scripts/chatValidator.js";
+import formValidation from "../scripts/formValidation.js";
 
 const chatRouter = Router();
 
@@ -35,6 +37,8 @@ chatRouter.post(
 chatRouter.get(
     "/:id/message",
     chatIsAuthenticatedAndAuthorized,
+    limitOffset,
+    formValidation,
     chatController.getMessages,
 );
 
