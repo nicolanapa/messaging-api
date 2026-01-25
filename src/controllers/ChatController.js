@@ -118,7 +118,31 @@ class chatController {
         return res.status(200).json({ message });
     }
 
-    async deleteMessage(req, res) {}
+    async deleteMessage(req, res) {
+        // Keep DELETE /chat/:id/message/:messageId
+        // but delete DELETE /chat/:id/image/:imageId
+        // and use instead a TYPE enum in the body?
+
+        const message = await prisma.message.findUnique({
+            where: { id: req.params.messageId },
+        });
+
+        if (message === null) {
+            return res.status(404).json(false);
+        }
+
+        if (message.userId === req.user && message.chatId === req.params.id) {
+            await prisma.message.delete({
+                where: {
+                    id: req.params.messageId,
+                },
+            });
+
+            return res.status(200).json(true);
+        }
+
+        return res.status(403).json(false);
+    }
 
     async getImage(req, res) {
         // Make it download the given Image
@@ -129,7 +153,27 @@ class chatController {
         return res.status(200).json({ image });
     }
 
-    async deleteImage(req, res) {}
+    async deleteImage(req, res) {
+        const image = await prisma.message.findUnique({
+            where: { id: req.params.imageId },
+        });
+
+        if (image === null) {
+            return res.status(404).json(false);
+        }
+
+        if (image.userId === req.user && image.chatId === req.params.id) {
+            await prisma.message.delete({
+                where: {
+                    id: req.params.imageId,
+                },
+            });
+
+            return res.status(200).json(true);
+        }
+
+        return res.status(403).json(false);
+    }
 }
 
 export default new chatController();
