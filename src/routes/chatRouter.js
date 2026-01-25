@@ -51,13 +51,25 @@ chatRouter.post(
 chatRouter.get(
     "/:id/message/:messageId",
     chatIsAuthenticatedAndAuthorized,
-    chatController.deleteMessage,
+    chatController.getMessage,
 );
 
 chatRouter.delete(
     "/:id/message/:messageId",
     chatIsAuthenticatedAndAuthorized,
     chatController.deleteMessage,
+);
+
+chatRouter.get(
+    "/:id/image/:imageId",
+    chatIsAuthenticatedAndAuthorized,
+    chatController.getImage,
+);
+
+chatRouter.delete(
+    "/:id/image/:imageId",
+    chatIsAuthenticatedAndAuthorized,
+    chatController.deleteImage,
 );
 
 export default chatRouter;

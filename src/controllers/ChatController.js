@@ -110,7 +110,26 @@ class chatController {
 
     async postMessage(req, res) {}
 
+    async getMessage(req, res) {
+        const message = await prisma.message.findUnique({
+            where: { id: req.params.messageId },
+        });
+
+        return res.status(200).json({ message });
+    }
+
     async deleteMessage(req, res) {}
+
+    async getImage(req, res) {
+        // Make it download the given Image
+        const image = await prisma.image.findUnique({
+            where: { id: req.params.imageId },
+        });
+
+        return res.status(200).json({ image });
+    }
+
+    async deleteImage(req, res) {}
 }
 
 export default new chatController();
