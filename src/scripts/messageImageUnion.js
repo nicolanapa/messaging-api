@@ -1,4 +1,6 @@
-async function messageImageUnion(prisma, chatId, limit = null, offset = null) {
+async function messageImageUnion(prisma, chatId, limit = 0, offset = 0) {
+    // console.log(limit, offset);
+
     const messages = await prisma.message.findMany({
         where: {
             chatId: chatId,
@@ -6,6 +8,8 @@ async function messageImageUnion(prisma, chatId, limit = null, offset = null) {
         orderBy: {
             createdAt: "asc",
         },
+        take: limit === 0 ? 4096 : limit,
+        skip: offset,
     });
 
     const images = await prisma.image.findMany({
@@ -15,9 +19,11 @@ async function messageImageUnion(prisma, chatId, limit = null, offset = null) {
         orderBy: {
             uploadedAt: "asc",
         },
+        take: limit === 0 ? 4096 : limit,
+        skip: offset,
     });
 
-    // console.log(messages, "\n\n", images);
+    // console.log("MESSAGES:", messages, "\n\nIMAGES:", images);
 
     let arrayOfMessagesAndImages = Array(messages.length + images.length);
 
