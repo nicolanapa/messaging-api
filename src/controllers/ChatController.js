@@ -108,7 +108,25 @@ class chatController {
         return res.status(200).json({ messagesImages: allMessagesImages });
     }
 
-    async postMessage(req, res) {}
+    async postMessage(req, res) {
+        // Supports only text for now
+
+        const message = {
+            text: req.body.text,
+            userId: req.user,
+            chatId: req.params.id,
+        };
+
+        if (
+            (await prisma.message.create({
+                data: message,
+            })) !== null
+        ) {
+            return res.status(200).json(true);
+        }
+
+        return res.status(500).json(false);
+    }
 
     async getMessage(req, res) {
         const message = await prisma.message.findUnique({
