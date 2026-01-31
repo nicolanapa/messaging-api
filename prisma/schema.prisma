@@ -124,7 +124,7 @@ model Message {
   // Will make the text field encrypted once the basic system works
   // encryptedText String   @map("encrypted_text")
   text      String   @map("text") @db.VarChar(4096)
-  createdAt DateTime @map("created_at") @db.Timestamptz()
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
 
   @@map("message")
 }
@@ -137,7 +137,7 @@ model Image {
   chat   Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId String  @map("chat_id") @db.Uuid
 
-  uploadedAt DateTime @map("uploaded_at") @db.Timestamptz()
+  uploadedAt DateTime @default(now()) @map("uploaded_at") @db.Timestamptz()
 
   @@map("image")
 }
