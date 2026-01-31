@@ -25,4 +25,13 @@ const limitOffset = [
         .withMessage("offset must be x >= 0"),
 ];
 
-export { limitOffset };
+const messageValidator = [
+    body("text")
+        .escape()
+        .trim()
+        .isLength({ min: 1, max: 4096 })
+        .withMessage("message length must be 1 <= x <= 4096"),
+    body("image").optional(),
+];
+
+export { limitOffset, messageValidator };
