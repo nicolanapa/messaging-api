@@ -1,5 +1,26 @@
 import { body } from "express-validator";
 
+import customStringArrayValidator from "./customStringArrayValidator.js";
+
+const chatValidator = [
+    body("name")
+        .optional()
+        .isLength({ max: 96 })
+        .withMessage("name length must be x <= 96"),
+    body("type").custom((value) =>
+        customStringArrayValidator(value, ["CHAT", "GROUP_CHAT"]),
+    ),
+    body("userArray") // test if it works correctly
+        .escape()
+        .trim()
+        .isArray()
+        .withMessage("userArray must be an Array")
+        .isLength({ min: 1, max: 256 })
+        .withMessage("userArray length must be x <= 96"),
+];
+
+const addUserValidator = chatValidator[2];
+
 const limitOffset = [
     body("limit")
         .optional({
@@ -34,4 +55,4 @@ const messageValidator = [
     body("image").optional(),
 ];
 
-export { limitOffset, messageValidator };
+export { chatValidator, addUserValidator, limitOffset, messageValidator };
